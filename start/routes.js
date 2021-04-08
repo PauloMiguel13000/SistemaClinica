@@ -21,6 +21,10 @@ const Route = use('Route')
 // })
 
 
+// logs
+Route.get('logs', 'LogController.index');
+
+
 // cruds usuario
 // Route.resource('users', 'UserController').apiOnly();
 Route.get('users', 'UserController.index').middleware('auth');
@@ -30,5 +34,9 @@ Route.delete('users/:id', 'UserController.destroy').middleware('auth');
 Route.post('/login', 'UserController.login');
 Route.get('/logout', 'UserController.logout');
 
+
 //rota agendamento
-Route.post('/agendamentos', 'AgendamentoController.store');
+Route.get('agendamento', 'AgendamentoController.index');
+Route.post('/agendamento', 'AgendamentoController.store').middleware('auth');
+Route.put('agendamento/:id', 'AgendamentoController.update').middleware('auth');
+Route.delete('agendamento/:id', 'AgendamentoController.destroy').middleware('auth');

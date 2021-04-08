@@ -7,7 +7,7 @@ class AgendamentoSchema extends Schema {
   up () {
     this.create('agendamentos', (table) => {
       table.increments()
-      table.integer('telefone')
+      table.string('telefone')
       table.date('data').notNullable()
       table.string('hora').notNullable()
       table.string('especialidade').notNullable()
