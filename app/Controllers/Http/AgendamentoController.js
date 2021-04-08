@@ -1,18 +1,54 @@
 'use strict'
 
 const Agendamento = use('App/Models/Agendamento');
-// const User =use('App/Models/User');
+
+const Log = use('App/Models/Log');
 
 class AgendamentoController {
 
-async store ({request, response}) {
+
+
+//ver agendamentos
+async index ({ request, response, view }) {
+  const agendamentos = await Agendamento.query().with('user').fetch();
+
+  return agendamentos;
+}
+
+//  criar agendamento
+async store ({request, response, auth}) {
+  const {Controller, Action} = request.all();
+  const {id}= auth.user;
   //nome, email, telefone, data, hora, especialidade
 const {telefone, data, hora, especialidade} = request.all();
 
-const agendamento = await Agendamento.create({telefone, data, hora, especialidade});
-
-return agendamento;
+const agendamento = await Agendamento.create({telefone, data, hora, especialidade, user_id:id});
+const logs = await Log.create({ Controller: 'Agendamento', Action: 'Criar', user_id: id});
+return agendamento, logs, response.status(200).send({message:'Agendamento Concluido'});
 }
+//atualizar
+async update ({ params, request, response, auth }) {
+  const {Controller, Action} = request.all();
+  const {id}= auth.user;
+  const agendamento = await agendamento.findOrFail(params.id);
+  const {telefone, data, hora, especialidade} = request.all();
+  const logs = await Log.create({ Controller: 'Agendamento', Action:'Editar', user_id:id});
+  agendamento.merge({telefone, data, hora, especialidade, user_id:id});
+  await banner.save();
+
+  return agendamento,logs,response.status(200).send({message: 'Agendamento Editado'});
+}
+
+//remover
+async destroy ({ params, request, response, auth }) {
+  const {Controller, Action} = request.all();
+  const {id}= auth.user;
+  const agendamento = await agendamento.findOrFail(params.id);
+const logs = await Log.create({ Controller: 'Agendamento', Action:'Deletar', user_id:id});
+await agendamento.delete();
+return logs, response.status(200).send({message: 'Banner Removido'});
+}
+
 }
 
 module.exports = AgendamentoController
